@@ -34,36 +34,34 @@ public class WordWrap {
     public static void wordwrap(List<String> words, int M) {
         int n = words.size();
         
-        int[][] extras = new int[n+1][n+1];
-        int[][] lineCost = new int[n+1][n+1];
+        int[][] free = new int[n+1][n+1];
+        //int[][] lineCost = new int[n+1][n+1];
         int[] cost = new int[n+1];
         int[] p = new int[n+1];
+        int lineCost;
         
         for(int i = 1; i <= n; i++){
-            extras[i][i] = M - words.get(i-1).length();
+            free[i][i] = M - words.get(i-1).length();
             for(int j = i + 1; j <= n; j++){
-                extras[i][j] = extras[i][j-1] - words.get(i-1).length() - 1;
+                free[i][j] = free[i][j-1] - words.get(i-1).length() - 1;
             }
         }
-        
-        for(int i = 1; i <= n; i++){
-            for(int j = i; j <= n; j++){
-                if(extras[i][j] < 0){
-                    lineCost[i][j] = Integer.MAX_VALUE;
-                }else if(j == n && extras[i][j] >= 0){
-                    lineCost[i][j] = 0;
-                }else{
-                    lineCost[i][j] = (int)Math.pow(extras[i][j], 2);
-                }
-            }
-        }
-        
+                
         cost[0] = 0;
         for(int j = 1; j <= n; j++){
             cost[j] = Integer.MAX_VALUE;
             for(int i = 1; i <= j; i++){
-                if(cost[i-1] != Integer.MAX_VALUE && lineCost[i][j] != Integer.MAX_VALUE && (cost[i-1] + lineCost[i][j] < cost[j])){
-                    cost[j] = cost[i-1] + lineCost[i][j];
+                
+                if(free[i][j] < 0){
+                    lineCost = Integer.MAX_VALUE;
+                }else if(j == n && free[i][j] >= 0){
+                    lineCost = 0;
+                }else{
+                    lineCost = (int)Math.pow(free[i][j], 2);
+                }
+                
+                if(cost[i-1] != Integer.MAX_VALUE && lineCost != Integer.MAX_VALUE && (cost[i-1] + lineCost < cost[j])){
+                    cost[j] = cost[i-1] + lineCost;
                     p[j] = i;
                 }
             }
