@@ -21,7 +21,7 @@ public class WordWrap {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        String s = "aa bb ccc ddddd";
+        String s = "aa bb c ccc ee";
         String[] wordsT = s.split(" ");
         List<String> words = new ArrayList<String>();
         for(int i = 0; i < wordsT.length; i++){
@@ -35,7 +35,6 @@ public class WordWrap {
         int n = words.size();
         
         int[][] free = new int[n+1][n+1];
-        //int[][] lineCost = new int[n+1][n+1];
         int[] cost = new int[n+1];
         int[] p = new int[n+1];
         int lineCost;
@@ -43,22 +42,20 @@ public class WordWrap {
         for(int i = 1; i <= n; i++){
             free[i][i] = M - words.get(i-1).length();
             for(int j = i + 1; j <= n; j++){
-                free[i][j] = free[i][j-1] - words.get(i-1).length() - 1;
+                free[i][j] = free[i][j-1] - words.get(j-1).length() - 1;
             }
         }
-                
+        
         cost[0] = 0;
         for(int j = 1; j <= n; j++){
             cost[j] = Integer.MAX_VALUE;
             for(int i = 1; i <= j; i++){
                 
-                if(free[i][j] < 0){
-                    lineCost = Integer.MAX_VALUE;
-                }else if(j == n && free[i][j] >= 0){
+                if(j == n && free[i][j] >= 0){
                     lineCost = 0;
                 }else{
-                    lineCost = (int)Math.pow(free[i][j], 2);
-                }
+                    lineCost = (int)Math.pow(free[i][j]+1, 2);
+                }                
                 
                 if(cost[i-1] != Integer.MAX_VALUE && lineCost != Integer.MAX_VALUE && (cost[i-1] + lineCost < cost[j])){
                     cost[j] = cost[i-1] + lineCost;
@@ -67,7 +64,7 @@ public class WordWrap {
             }
         }
         
-        WordWrap.printSolution(p,n);
+        printSolution(p,n);
     }
     
     public static int printSolution (int p[], int n){
@@ -82,7 +79,4 @@ public class WordWrap {
         return k;
     }
     
-    public void giveLines(int[] p,int j){
-        int i = p[j];
-    }
 }
